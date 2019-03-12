@@ -1,11 +1,7 @@
-// Uniform variables.
 uniform sampler2D Texture;
-
 uniform float Amplitude;
 uniform float Frequency;
 
-
-// Varying variables.
 varying vec2 vUv;
 
 // Description : Array and textureless GLSL 3D simplex noise function.
