@@ -2,14 +2,14 @@ import * as THREE from 'three.js';
 import * as async from 'async';
 import TweenMax from 'gsap/TweenMax';
 
-import maskAsset from './mask.png';
-import backgroundAsset from './bg4.png';
+import maskAsset from './mask.svg';
+import backgroundAsset from './bg5.jpg';
 import background2Asset from './bg3.jpg'
 import blueAsset from './blue.png';
 
 import image1 from './Img22.jpg';
 import image2 from './Img26.jpg';
-import disp from './8.jpg';
+import disp from './1.jpg';
 
 import {
   vertexShader,
@@ -46,16 +46,17 @@ function loadDisplacement() {
   var speedIn = 10;
   var speedOut = 10;
   var userHover = true;
-  var easing = Expo.linear;
+  var easing = Expo.Rough;
 
   const textureLoader = new THREE.TextureLoader();
 
   async.parallel([
     (callback) => textureLoader.load(backgroundAsset, (result) => callback(null, result)),
-    (callback) => textureLoader.load(background2Asset, (result) => callback(null, result)),
+    (callback) => textureLoader.load(maskAsset, (result) => callback(null, result)),
     (callback) => textureLoader.load(disp, (result) => callback(null, result)),
   ], (error, [texture1, texture2, disp]) => {
     disp.wrapS = disp.wrapT = THREE.RepeatWrapping;
+    texture2.wrapS = texture2.wrapT = THREE.ClampToEdgeWrapping;
 
     texture1.magFilter = texture2.magFilter = THREE.LinearFilter;
     texture1.minFilter = texture2.minFilter = THREE.LinearFilter;
@@ -94,6 +95,10 @@ function loadDisplacement() {
           type: 't',
           value: disp
         },
+        zoom: {
+          type: 'f',
+          value: 10.0
+        }
       },
 
       vertexShader,
@@ -102,6 +107,14 @@ function loadDisplacement() {
 
     var geometry = new THREE.PlaneGeometry(2, 2, 1);
     var mesh = new THREE.Mesh(geometry, material);
+    /*var imageMaterial = new THREE.MeshBasicMaterial({
+      map: texture1,
+      alphaMap: texture2,
+      transparent: false,
+      depthWrite: false
+    });
+
+    var mesh = new THREE.Mesh(geometry, imageMaterial)*/
     scene.add(mesh);
 
     document.body.appendChild(renderer.domElement);
